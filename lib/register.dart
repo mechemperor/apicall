@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class register extends StatefulWidget {
   const register({Key? key}) : super(key: key);
@@ -15,6 +20,9 @@ class _registerState extends State<register> {
   TextEditingController temail = TextEditingController();
   TextEditingController tpassword = TextEditingController();
 
+ ImagePicker _picker = ImagePicker();
+  String imagepath = "";
+
 
 
   @override
@@ -26,6 +34,25 @@ class _registerState extends State<register> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+                InkWell(
+                  onTap:() async {
+
+                    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+
+                   setState(() {
+                     imagepath = photo!.path;
+                   });
+
+                  },
+                  child: Container(
+                    height: 80,
+                    width: 80,
+                    child: imagepath.isEmpty
+                    ? Icon(Icons.supervised_user_circle)
+                        : Image.file(File(imagepath)),
+                  ),
+                ),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
@@ -73,22 +100,38 @@ class _registerState extends State<register> {
               String api =
               "https://mechemperor.000webhostapp.com/vspapi/register.php";
 
-              Map m = {
+              //dio,http
+
+              DateTime dt = DateTime.now();
+              String imagename = "$name${dt.year}${dt.month}${dt.day}${dt.hour}${dt.minute}${dt.second}.jpg";
+
+              var formData = FormData.fromMap({
                 'name': name,
                 'contact': contact,
                 'email': email,
-                'password': password
-              };
+                'password': password,
+                'file': await MultipartFile.fromFile(imagepath, filename: imagename),
+              });
 
-              var url = Uri.parse(api);
-              var response = await http.post(url, body: m);
+              var response = await Dio().post(api, data: formData);
 
               Navigator.pop(context);
 
               print('Response status: ${response.statusCode}');
 
               if(response.statusCode==200){
-                print('Response body: ${response.body}');
+                print('Response body: ${response.data}');
+
+                Map map = jsonDecode(response.data);
+
+                int result = map['result'];
+                if(result==0){
+                  print("try again");
+                }
+                else if(result==1)
+                {
+                  //go to login page
+                }
               }
 
             }, child: Text("Submit"))

@@ -1,6 +1,17 @@
 <?php
 
 $name = $_POST['name'];
+$contact= $_POST['contact'];
+$email=$_POST['email'];
+$password=$_POST['password'];
 
+	$temp = array();
+
+	$temp[0] = $name;
+	$temp[1] = $email; 
+	$temp[2] = $contact; 
+	$temp[3] = $password;  
+
+	echo json_encode($temp);
 
 ?>
