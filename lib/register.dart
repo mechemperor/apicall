@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:apicall/login.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -130,8 +131,16 @@ class _registerState extends State<register> {
                 }
                 else if(result==1)
                 {
-                  //go to login page
+                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                   return login();
+                 },));
                 }
+                else if(result==2)
+                  {
+
+                    print("user already exist");
+
+                  }
               }
 
             }, child: Text("Submit"))
