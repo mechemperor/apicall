@@ -39,6 +39,7 @@ dependencies:
   http:
   image_picker:
   dio:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

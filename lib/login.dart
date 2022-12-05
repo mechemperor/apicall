@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:apicall/homepage.dart';
+import 'package:apicall/register.dart';
+import 'package:apicall/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -57,8 +60,6 @@ class _loginState extends State<login> {
               var response = await Dio().get(api);
               print(response);
 
-              Navigator.pop(context);
-
               if(response.statusCode==200){
 
                 Map map = jsonDecode(response.data);
@@ -71,6 +72,10 @@ class _loginState extends State<login> {
                 }
                 else
                 {
+
+                   await Utils.prefs!.setBool('loginstatus',true);
+
+
                   Map data = map['data'];
 
                   String id = data['id'];
@@ -79,10 +84,33 @@ class _loginState extends State<login> {
                   String contact = data['contact'];
                   String password = data['password'];
                   String imagepath = data['imagepath'];
+
+
+                   await Utils.prefs!.setString('id', id);
+                   await Utils.prefs!.setString('name', name);
+                   await Utils.prefs!.setString('email', email);
+                   await Utils.prefs!.setString('contact',contact);
+                   await Utils.prefs!.setString('password', password);
+                   await Utils.prefs!.setString('imagepath', imagepath);
+
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                      return home();
+                    },));
+
+
                 }
               }
 
-            }, child: Text("Submit"))
+            }, child: Text("Submit")),
+            
+            
+            ElevatedButton(onPressed: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                return register();
+              },));
+
+              
+            }, child: Text("Register"))
           ],
         ),
       ),

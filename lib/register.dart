@@ -118,15 +118,15 @@ class _registerState extends State<register> {
 
               Navigator.pop(context);
 
-              print('Response status: ${response.statusCode}');
-
               if(response.statusCode==200){
-                print('Response body: ${response.data}');
+                print('Response : ${response.data}');
 
                 Map map = jsonDecode(response.data);
 
                 int result = map['result'];
                 if(result==0){
+
+                  SimpleDialog(children: [Text("Try again"),],alignment: Alignment.center,);
                   print("try again");
                 }
                 else if(result==1)
@@ -137,7 +137,7 @@ class _registerState extends State<register> {
                 }
                 else if(result==2)
                   {
-
+                    SimpleDialog(children: [Text("User already exist"),],alignment: Alignment.center,);
                     print("user already exist");
 
                   }
